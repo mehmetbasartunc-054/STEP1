@@ -1,11 +1,25 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
+const LOADING_SHOWN_KEY = "luminatech-loading-shown";
+
 export default function LoadingScreen() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Yükleme ekranının ekranda kalma süresi (5000ms = 5 saniye)
+    // Sadece ilk ziyarette loading ekranini goster (session bazli)
+    const hasShown = sessionStorage.getItem(LOADING_SHOWN_KEY);
+    
+    if (hasShown) {
+      // Daha once gosterilmis, hemen kapat
+      setIsLoading(false);
+      return;
+    }
+    
+    // Ilk ziyaret, loading ekranini goster
+    setIsLoading(true);
+    sessionStorage.setItem(LOADING_SHOWN_KEY, "true");
+    
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 2000);
@@ -13,7 +27,7 @@ export default function LoadingScreen() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Eğer yükleme bittiyse, ekranı tamamen gizle
+  // Eger yukleme bittiyse veya daha once gosterildiyse, ekrani tamamen gizle
   if (!isLoading) return null;
 
   return (
