@@ -438,3 +438,48 @@
 .animate-scaleIn {
   animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Scratch Card Animations */
+@keyframes scratch {
+  0% { transform: scale(1); }
+  25% { transform: scale(0.92) rotate(-2deg); }
+  50% { transform: scale(0.88) rotate(2deg); }
+  75% { transform: scale(0.92) rotate(-1deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+@keyframes reveal {
+  0% { 
+    opacity: 0;
+    transform: scale(0.5) rotateY(180deg);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1) rotateY(0);
+  }
+}
+
+@keyframes particle {
+  0% { 
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+  100% { 
+    opacity: 0;
+    transform: scale(0) translate(var(--tx, 20px), var(--ty, -30px));
+  }
+}
+
+.animate-scratch {
+  animation: scratch 0.4s ease-out;
+}
+
+.animate-reveal {
+  animation: reveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-particle {
+  --tx: calc((var(--i, 0) - 4) * 15px);
+  --ty: calc(-20px - var(--i, 0) * 5px);
+  animation: particle 0.6s ease-out forwards;
+}
