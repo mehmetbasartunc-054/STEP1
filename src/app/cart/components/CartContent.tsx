@@ -5,11 +5,8 @@ import Icon from "@/components/ui/AppIcon";
 import { useCart } from "@/context/CartContext";
 
 export default function CartContent() {
-  const cart = useCart() as any;
-  const currentItems = cart.cartItems || cart.items || [];
-  const removeItem = cart.removeItem || cart.removeFromCart;
-  const totalPrice = cart.totalPrice || 0;
-  const updateQuantity = cart.updateQuantity;
+  const { items, removeItem, updateQuantity, totalPrice } = useCart();
+  const currentItems = items;
 
   if (currentItems.length === 0) {
     return (
