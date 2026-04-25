@@ -148,9 +148,13 @@ export default function SpinToWin() {
   const cy = size / 2;
   const r = size / 2 - 8;
 
+  function round(value: number) {
+    return Math.round(value * 1000) / 1000;
+  }
+
   function polarToCartesian(angle: number, radius: number) {
     const rad = ((angle - 90) * Math.PI) / 180;
-    return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
+    return { x: round(cx + radius * Math.cos(rad)), y: round(cy + radius * Math.sin(rad)) };
   }
 
   function slicePath(index: number) {
@@ -158,14 +162,14 @@ export default function SpinToWin() {
     const endAngle = startAngle + SLICE_DEG;
     const start = polarToCartesian(startAngle, r);
     const end = polarToCartesian(endAngle, r);
-    return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 0 1 ${end.x} ${end.y} Z`;
+    return `M ${round(cx)} ${round(cy)} L ${start.x} ${start.y} A ${round(r)} ${round(r)} 0 0 1 ${end.x} ${end.y} Z`;
   }
 
   function labelTransform(index: number) {
     const midAngle = index * SLICE_DEG + SLICE_DEG / 2;
     const labelR = r * 0.62;
     const pos = polarToCartesian(midAngle, labelR);
-    return { x: pos.x, y: pos.y, rotate: midAngle - 90 };
+    return { x: pos.x, y: pos.y, rotate: round(midAngle - 90) };
   }
 
   return (

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Script from "next/script";
 import Icon from "@/components/ui/AppIcon";
@@ -51,9 +51,13 @@ const modelViews = [
 
 export default function HeroSection() {
   const [modelIndex, setModelIndex] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   const slideData = modelViews[modelIndex];
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden bg-[#f7f9fc] dark:bg-[#0a0f1c] transition-colors duration-500">
@@ -122,13 +126,15 @@ export default function HeroSection() {
               strategy="beforeInteractive"
             />
 
-            <model-viewer 
-              src={slideData.src}
-              alt={slideData.alt} 
-              autorotate
-              camera-controls
-              style={{ width: '100%', height: '100%' }}
-            />
+            {isMounted && (
+              <model-viewer 
+                src={slideData.src}
+                alt={slideData.alt} 
+                autorotate
+                camera-controls
+                style={{ width: '100%', height: '100%' }}
+              />
+            )}
 
             <button
               type="button"
