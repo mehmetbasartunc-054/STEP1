@@ -12,11 +12,11 @@ const SYMBOLS = [
 ];
 
 const DISCOUNT_CODES = [
-  { code: "LUMINA10", discount: 10 },
-  { code: "LUMINA20", discount: 20 },
-  { code: "LUMINA30", discount: 30 },
-  { code: "LUMINA40", discount: 40 },
-  { code: "LUMINA50", discount: 50 },
+  { code: "GG10", discount: 10 },
+  { code: "GG20", discount: 20 },
+  { code: "GG30", discount: 30 },
+  { code: "GG40", discount: 40 },
+  { code: "GG50", discount: 50 },
 ];
 
 function generateCards(): { symbol: typeof SYMBOLS[0]; revealed: boolean }[] {
@@ -246,7 +246,7 @@ export default function CampaignSection() {
             </h2>
             
             <p className="text-[16px] text-[#8a8aaa] dark:text-gray-400 leading-relaxed mb-8 transition-colors">
-              Sınırları zorlayan teknoloji, seni asla yarı yolda bırakmaz. Lumina Tech ile tarzını yansıt, müziği hisset ve hayatın ritmini yakala.
+              Sınırları zorlayan teknoloji, seni asla yarı yolda bırakmaz. GG ile tarzını yansıt, müziği hisset ve hayatın ritmini yakala.
             </p>
 
             <ul className="flex flex-col gap-4 mb-8">

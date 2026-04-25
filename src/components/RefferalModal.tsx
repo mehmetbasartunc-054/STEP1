@@ -48,7 +48,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
             </div>
             <h2 className="text-2xl font-bold text-[#1a1a2e] dark:text-white mb-2">Arkadaşını Davet Et</h2>
             <p className="text-sm text-[#8a8aaa] dark:text-gray-400 mb-6">
-              Arkadaşının e-posta adresini gir, ona Lumina Tech ile tanışması için mail atalım. Karşılığında anında <strong>250 TL</strong> indirim kazan!
+              Arkadaşının e-posta adresini gir, ona GG ile tanışması için mail atalım. Karşılığında anında <strong>250 TL</strong> indirim kazan!
             </p>
 
             <form onSubmit={handleInvite} className="flex flex-col gap-4">

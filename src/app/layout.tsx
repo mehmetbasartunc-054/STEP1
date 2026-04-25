@@ -30,9 +30,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
   ),
-  title: "LuminaTech — Sınırlarını Zorla, Geleceği Yaşa",
+  title: "GG — Sınırlarını Zorla, Geleceği Yaşa",
   description:
-    "LuminaTech ile akıllı saatler, kablosuz kulaklıklar ve hoparlörlerle gençlik enerjini teknolojiye dönüştür.",
+    "GG ile akıllı saatler, kablosuz kulaklıklar ve hoparlörlerle gençlik enerjini teknolojiye dönüştür.",
   icons: {
     icon: [{ url: "/favicon.ico", type: "image/x-icon" }],
   },

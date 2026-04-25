@@ -14,7 +14,7 @@ export default function Footer() {
           <div className="md:col-span-2">
             <Link href="/homepage" className="flex items-center gap-2 mb-6 inline-block">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#5aacf0] to-[#2ec4a0] shadow-lg shadow-[#5aacf0]/20">
-                <img src="/assets/images/app_logo.png" alt="Lumina Tech Logo" className="w-4 h-4 object-contain brightness-0 invert" />
+                <img src="/assets/images/app_logo.png" alt="GG Logo" className="w-4 h-4 object-contain brightness-0 invert" />
               </div>
               <span className="text-xl font-black tracking-tight text-[#1a1a2e] dark:text-white">
                 Lumina<span className="text-[#5aacf0]">Tech</span>

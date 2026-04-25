@@ -13,6 +13,12 @@ const VALID_COUPONS: Record<string, number> = {
   "INDIRIM10": 10,
   "HOSGELDIN": 15,
   "YAZA20": 20,
+  // Kazi kazan kupon kodlari
+  "GG10": 10,
+  "GG20": 20,
+  "GG30": 30,
+  "GG40": 40,
+  "GG50": 50,
 };
 
 export default function CheckoutContent() {
@@ -93,10 +99,10 @@ export default function CheckoutContent() {
           Enerji Paketin <br/> <span className="text-[#2ec4a0]">Hazırlanıyor!</span>
         </h2>
         <p className="text-gray-500 dark:text-gray-400 text-lg mb-8 max-w-lg mx-auto">
-          Siparişini aldık. Lumina Tech ekosistemine hoş geldin! Ürünlerin ışık hızında kargoya verilecek.
+          Siparişini aldık. GG ekosistemine hoş geldin! Ürünlerin ışık hızında kargoya verilecek.
         </p>
         <div className="inline-block bg-gray-100 dark:bg-white/5 px-6 py-4 rounded-2xl font-mono text-sm text-gray-500 mb-10 border border-gray-200 dark:border-white/10 shadow-inner">
-          Sipariş Numaran: <span className="font-bold text-[#5aacf0]">#LMN-{Math.floor(Math.random() * 90000) + 10000}</span>
+          Sipariş Numaran: <span className="font-bold text-[#5aacf0]">#GG-{Math.floor(Math.random() * 90000) + 10000}</span>
         </div>
         <br/>
         <Link href="/homepage" className="inline-flex items-center gap-2 px-8 py-4 bg-[#1a1a2e] dark:bg-white text-white dark:text-black rounded-full font-bold hover:scale-105 transition-transform shadow-lg">

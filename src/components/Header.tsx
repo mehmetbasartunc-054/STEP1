@@ -94,7 +94,7 @@ export default function Header() {
               <img src="/assets/images/app_logo.png" alt="Logo" className="w-4 h-4 object-contain" />
             </div>
             <span className="text-[15px] font-semibold tracking-[-0.02em] text-[#1a1a2e] dark:text-white transition-colors duration-300">
-              Lumina<span className="text-[#8a8aaa] font-normal">Tech</span>
+              GG
             </span>
           </Link>
 

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-const LOADING_SHOWN_KEY = "luminatech-loading-shown";
+const LOADING_SHOWN_KEY = "gg-loading-shown";
 
 export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +46,7 @@ export default function LoadingScreen() {
           {/* Logo (Daha önce eklediğin elma yerine koyduğumuz resim) */}
           <img 
             src="/assets/images/app_logo.png" 
-            alt="LuminaTech Yükleniyor" 
+            alt="GG Yükleniyor" 
             className="w-12 h-12 animate-pulse object-contain" 
           />
         </div>
@@ -54,7 +54,7 @@ export default function LoadingScreen() {
 
       {/* Marka Adı */}
       <h1 className="text-3xl font-bold tracking-[-0.02em] text-[#1a1a2e] mb-3 animate-fade-in">
-        Lumina<span className="text-[#8a8aaa] font-normal">Tech</span>
+        GG
       </h1>
 
       {/* Zıplayan Noktalarla "Yükleniyor" Animasyonu */}
