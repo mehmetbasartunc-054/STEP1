@@ -393,7 +393,7 @@ const categories = [
   { id: "fare", label: "Fare", emoji: "🖱️" }
 ];
 
-function ProductCard({ product, isAnyHovered, onHover, onLeave }: { product: any; isAnyHovered: boolean; onHover: () => void; onLeave: () => void }) {
+function ProductCard({ product, isAnyHovered, onHover, onLeave, onShowDetails }: { product: any; isAnyHovered: boolean; onHover: () => void; onLeave: () => void; onShowDetails: () => void }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -425,7 +425,7 @@ function ProductCard({ product, isAnyHovered, onHover, onLeave }: { product: any
         ${isHovered 
           ? 'scale-105 z-30 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.25)] dark:shadow-[0_40px_80px_-20px_rgba(90,172,240,0.3)] -translate-y-3 border-transparent' 
           : isAnyHovered 
-            ? 'scale-[0.97] opacity-50 blur-[2px]' 
+            ? 'scale-[0.98] opacity-70 blur-[1px]' 
             : 'hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)]'
         }
       `}
@@ -485,10 +485,14 @@ function ProductCard({ product, isAnyHovered, onHover, onLeave }: { product: any
 
         {/* Quick view overlay */}
         <div className={`absolute inset-0 flex items-center justify-center bg-black/20 dark:bg-black/40 backdrop-blur-sm transition-all duration-500 ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white/90 dark:bg-white/10 backdrop-blur-md rounded-full text-sm font-semibold text-gray-800 dark:text-white border border-white/50 dark:border-white/20 shadow-lg transform transition-all duration-500" style={{ transform: isHovered ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.9)' }}>
+          <button 
+            onClick={(e) => { e.stopPropagation(); onShowDetails(); }}
+            className="flex items-center gap-2 px-5 py-2.5 bg-white/95 dark:bg-white/15 backdrop-blur-md rounded-full text-sm font-semibold text-gray-800 dark:text-white border border-white/50 dark:border-white/20 shadow-lg transform transition-all duration-500 hover:scale-105 hover:bg-white dark:hover:bg-white/25 active:scale-95" 
+            style={{ transform: isHovered ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.9)' }}
+          >
             <Icon name="EyeIcon" size={16} />
             Detaylari Gor
-          </div>
+          </button>
         </div>
       </div>
 
@@ -556,12 +560,234 @@ function ProductCard({ product, isAnyHovered, onHover, onLeave }: { product: any
   );
 }
 
+// Product Detail Modal Component
+function ProductDetailModal({ product, onClose }: { product: any; onClose: () => void }) {
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
+
+  const handleAdd = () => {
+    addItem({ id: product.id, name: product.name, price: product.price, image: product.image });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
+
+  // Detailed specifications based on product category
+  const getDetailedSpecs = () => {
+    const categorySpecs: Record<string, { icon: string; specs: { label: string; value: string }[] }> = {
+      "akilli-saatler": {
+        icon: "ClockIcon",
+        specs: [
+          { label: "Ekran", value: "AMOLED 1.4 inch" },
+          { label: "Pil Omru", value: "7 gun" },
+          { label: "Su Direnci", value: "5 ATM" },
+          { label: "Baglanti", value: "Bluetooth 5.2" },
+          { label: "Sensörler", value: "Nabiz, SpO2, GPS" },
+          { label: "Uyumluluk", value: "iOS & Android" },
+        ]
+      },
+      "scooter": {
+        icon: "BoltIcon",
+        specs: [
+          { label: "Menzil", value: "45-100 km" },
+          { label: "Maks Hiz", value: "25-50 km/h" },
+          { label: "Motor Gucu", value: "350-1000W" },
+          { label: "Sarj Suresi", value: "4-6 saat" },
+          { label: "Teker Boyutu", value: "8.5-10 inch" },
+          { label: "Maks Yuk", value: "100-120 kg" },
+        ]
+      },
+      "hoverboard": {
+        icon: "SparklesIcon",
+        specs: [
+          { label: "Menzil", value: "15-20 km" },
+          { label: "Maks Hiz", value: "12 km/h" },
+          { label: "Motor Gucu", value: "2x350W" },
+          { label: "Teker Boyutu", value: "6.5-8 inch" },
+          { label: "Bluetooth", value: "Evet" },
+          { label: "LED Isik", value: "RGB" },
+        ]
+      },
+      "vr": {
+        icon: "CubeIcon",
+        specs: [
+          { label: "Cozunurluk", value: "4K+ per eye" },
+          { label: "Yenileme Hizi", value: "90-120 Hz" },
+          { label: "Gorus Alani", value: "110-130 FOV" },
+          { label: "Takip", value: "6DoF Inside-out" },
+          { label: "Baglanti", value: "USB-C, Wi-Fi 6" },
+          { label: "Kumanda", value: "Dahil" },
+        ]
+      },
+      "hoparlor": {
+        icon: "SpeakerWaveIcon",
+        specs: [
+          { label: "Guc", value: "20-180W RMS" },
+          { label: "Pil Omru", value: "12-24 saat" },
+          { label: "Su Direnci", value: "IPX5-IPX7" },
+          { label: "Bluetooth", value: "5.1" },
+          { label: "Frekans", value: "50Hz-20kHz" },
+          { label: "Sarj", value: "USB-C" },
+        ]
+      },
+      "klavye": {
+        icon: "CommandLineIcon",
+        specs: [
+          { label: "Switch Tipi", value: "Mekanik/Membran" },
+          { label: "Aydinlatma", value: "RGB" },
+          { label: "Baglanti", value: "USB/Wireless" },
+          { label: "Layout", value: "Turkce Q" },
+          { label: "Anti-Ghost", value: "N-Key Rollover" },
+          { label: "Kablo", value: "Orulu 1.8m" },
+        ]
+      },
+      "fare": {
+        icon: "CursorArrowRaysIcon",
+        specs: [
+          { label: "DPI", value: "800-26000" },
+          { label: "Sensor", value: "Optik/Lazer" },
+          { label: "Polling Rate", value: "1000-4000 Hz" },
+          { label: "Agirlik", value: "60-90g" },
+          { label: "Baglanti", value: "USB/2.4GHz/BT" },
+          { label: "Pil", value: "70+ saat" },
+        ]
+      },
+    };
+
+    return categorySpecs[product.category] || categorySpecs["akilli-saatler"];
+  };
+
+  const specs = getDetailedSpecs();
+  const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+
+  return (
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fadeIn"
+      onClick={onClose}
+    >
+      <div 
+        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white dark:bg-[#111827] rounded-[32px] shadow-2xl border border-gray-100 dark:border-white/10 animate-scaleIn"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close button */}
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
+        >
+          <Icon name="XMarkIcon" size={20} />
+        </button>
+
+        <div className="grid md:grid-cols-2 gap-0">
+          {/* Image Section */}
+          <div className="relative h-72 md:h-full min-h-[320px] bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-t-[32px] md:rounded-l-[32px] md:rounded-tr-none overflow-hidden">
+            <div 
+              className="absolute inset-0 opacity-20" 
+              style={{ background: `radial-gradient(circle at center, ${product.accentColor} 0%, transparent 70%)` }}
+            />
+            <AppImage 
+              src={product.image} 
+              alt={product.name} 
+              fill 
+              className="object-contain p-8"
+            />
+            {/* Badge */}
+            <div className="absolute top-6 left-6">
+              <span 
+                className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full text-white shadow-xl flex items-center gap-2" 
+                style={{ background: product.accentColor }}
+              >
+                <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse" />
+                {product.badge}
+              </span>
+            </div>
+            {/* Discount badge */}
+            <div className="absolute top-6 right-6">
+              <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-red-500 text-white">
+                %{discount} Indirim
+              </span>
+            </div>
+          </div>
+
+          {/* Content Section */}
+          <div className="p-8">
+            <p 
+              className="text-xs font-bold uppercase tracking-wider mb-2" 
+              style={{ color: product.accentColor }}
+            >
+              {product.tagline}
+            </p>
+            <h2 className="text-2xl md:text-3xl font-black dark:text-white mb-4 tracking-tight">
+              {product.name}
+            </h2>
+
+            {/* Features */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {product.features.map((f: string) => (
+                <span 
+                  key={f} 
+                  className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10"
+                >
+                  {f}
+                </span>
+              ))}
+            </div>
+
+            {/* Detailed Specs */}
+            <div className="mb-6">
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                <Icon name={specs.icon} size={16} style={{ color: product.accentColor }} />
+                Teknik Ozellikler
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {specs.specs.map((spec) => (
+                  <div 
+                    key={spec.label} 
+                    className="flex justify-between items-center p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5"
+                  >
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{spec.label}</span>
+                    <span className="text-xs font-bold text-gray-900 dark:text-white">{spec.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Price & Add to Cart */}
+            <div className="flex items-center justify-between pt-6 border-t border-gray-100 dark:border-white/10">
+              <div>
+                <span className="text-sm text-gray-400 line-through font-medium block">
+                  {'\u20BA'}{product.originalPrice.toLocaleString('tr-TR')}
+                </span>
+                <span className="text-3xl font-black tracking-tight" style={{ color: product.accentColor }}>
+                  {'\u20BA'}{product.price.toLocaleString('tr-TR')}
+                </span>
+              </div>
+              
+              <button 
+                onClick={handleAdd}
+                className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all duration-300 shadow-lg active:scale-95 ${
+                  added 
+                    ? 'bg-green-500 text-white' 
+                    : 'text-white hover:shadow-xl hover:scale-105'
+                }`}
+                style={{ background: added ? undefined : product.accentColor }}
+              >
+                <Icon name={added ? "CheckIcon" : "ShoppingCartIcon"} size={20} />
+                {added ? 'Eklendi!' : 'Sepete Ekle'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ProductShowcase() {
   const [activeCategory, setActiveCategory] = useState("all");
   const filteredProducts = activeCategory === "all" ? products : products.filter(p => p.category === activeCategory);
   const [visibleCount, setVisibleCount] = useState(4);
   const displayProducts = filteredProducts.slice(0, visibleCount);
   const [hoveredProductId, setHoveredProductId] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   return (
     <section id="products" className="py-24 bg-[#fdfcfb] dark:bg-[#0a0f1c] transition-colors duration-700">
       <div className="max-w-[1200px] mx-auto px-6">
@@ -604,6 +830,7 @@ export default function ProductShowcase() {
               isAnyHovered={hoveredProductId !== null && hoveredProductId !== product.id}
               onHover={() => setHoveredProductId(product.id)}
               onLeave={() => setHoveredProductId(null)}
+              onShowDetails={() => setSelectedProduct(product)}
             />
           ))}
         </div>
@@ -630,6 +857,14 @@ export default function ProductShowcase() {
           </div>
         )}
       </div>
+
+      {/* Product Detail Modal */}
+      {selectedProduct && (
+        <ProductDetailModal 
+          product={selectedProduct} 
+          onClose={() => setSelectedProduct(null)} 
+        />
+      )}
     </section>
   );
 }
