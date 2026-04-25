@@ -393,9 +393,10 @@ const categories = [
   { id: "fare", label: "Fare", emoji: "🖱️" }
 ];
 
-function ProductCard({ product }: { product: any }) {
+function ProductCard({ product, isAnyHovered, onHover, onLeave }: { product: any; isAnyHovered: boolean; onHover: () => void; onLeave: () => void }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleAdd = () => {
     addItem({ id: product.id, name: product.name, price: product.price, image: product.image });
@@ -403,52 +404,151 @@ function ProductCard({ product }: { product: any }) {
     setTimeout(() => setAdded(false), 2000);
   };
 
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    onHover();
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    onLeave();
+  };
+
   return (
-    <div className="group relative bg-white/70 dark:bg-[#111827]/70 backdrop-blur-2xl rounded-[32px] border border-gray-100 dark:border-white/5 transition-all duration-500 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] hover:-translate-y-2 flex flex-col h-full overflow-hidden">
+    <div 
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={`
+        product-card group relative bg-white/80 dark:bg-[#111827]/80 backdrop-blur-2xl rounded-[32px] 
+        border border-gray-100 dark:border-white/10 flex flex-col h-full overflow-hidden
+        transition-all duration-500 ease-out cursor-pointer
+        ${isHovered 
+          ? 'scale-105 z-30 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.25)] dark:shadow-[0_40px_80px_-20px_rgba(90,172,240,0.3)] -translate-y-3 border-transparent' 
+          : isAnyHovered 
+            ? 'scale-[0.97] opacity-50 blur-[2px]' 
+            : 'hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)]'
+        }
+      `}
+      style={{
+        transform: isHovered ? 'scale(1.05) translateY(-12px)' : isAnyHovered ? 'scale(0.97)' : undefined,
+      }}
+    >
+      {/* Animated glow border on hover */}
+      <div 
+        className={`absolute inset-0 rounded-[32px] transition-opacity duration-500 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+        style={{ 
+          background: `linear-gradient(135deg, ${product.accentColor}40 0%, transparent 50%, ${product.accentColor}20 100%)`,
+          padding: '2px',
+        }}
+      />
       
-      <div className="relative h-56 flex items-center justify-center p-8 overflow-hidden">
-        <div className="absolute inset-0 opacity-10 transition-opacity group-hover:opacity-20" style={{ background: `radial-gradient(circle at center, ${product.accentColor} 0%, transparent 70%)` }}></div>
+      {/* Inner glow effect */}
+      <div 
+        className={`absolute inset-0 rounded-[32px] transition-all duration-700 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+        style={{ 
+          boxShadow: `inset 0 0 60px ${product.accentColor}15, 0 0 40px ${product.accentColor}20`,
+        }}
+      />
+
+      <div className="relative h-56 flex items-center justify-center overflow-hidden">
+        {/* Animated background gradient */}
+        <div 
+          className={`absolute inset-0 transition-all duration-700 ${isHovered ? 'opacity-30 scale-110' : 'opacity-10 scale-100'}`} 
+          style={{ background: `radial-gradient(circle at center, ${product.accentColor} 0%, transparent 70%)` }}
+        />
+        
+        {/* Floating particles effect on hover */}
+        <div className={`absolute inset-0 overflow-hidden transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 rounded-full animate-float" style={{ background: product.accentColor, animationDelay: '0s' }} />
+          <div className="absolute top-1/3 right-1/4 w-1.5 h-1.5 rounded-full animate-float" style={{ background: product.accentColor, animationDelay: '0.5s' }} />
+          <div className="absolute bottom-1/3 left-1/3 w-1 h-1 rounded-full animate-float" style={{ background: product.accentColor, animationDelay: '1s' }} />
+        </div>
+
         <AppImage 
           src={product.image} 
           alt={product.name} 
           fill 
-          className="object-contain p-8 group-hover:scale-110 transition-transform duration-700 ease-out" 
+          className={`object-cover transition-all duration-700 ease-out ${isHovered ? 'scale-110' : 'scale-100'}`}
+          style={{ objectPosition: 'center' }}
         />
-        <div className="absolute top-4 left-4">
-          <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full text-white shadow-xl" style={{ background: product.accentColor }}>
+        
+        {/* Badge with animation */}
+        <div className={`absolute top-4 left-4 transition-all duration-500 ${isHovered ? 'scale-110 -translate-y-1' : 'scale-100'}`}>
+          <span 
+            className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full text-white shadow-xl flex items-center gap-1.5" 
+            style={{ background: product.accentColor }}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full bg-white/80 ${isHovered ? 'animate-pulse' : ''}`} />
             {product.badge}
           </span>
         </div>
+
+        {/* Quick view overlay */}
+        <div className={`absolute inset-0 flex items-center justify-center bg-black/20 dark:bg-black/40 backdrop-blur-sm transition-all duration-500 ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+          <div className="flex items-center gap-2 px-4 py-2 bg-white/90 dark:bg-white/10 backdrop-blur-md rounded-full text-sm font-semibold text-gray-800 dark:text-white border border-white/50 dark:border-white/20 shadow-lg transform transition-all duration-500" style={{ transform: isHovered ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.9)' }}>
+            <Icon name="EyeIcon" size={16} />
+            Detaylari Gor
+          </div>
+        </div>
       </div>
 
-      <div className="p-6 pt-2 flex flex-col flex-1">
+      <div className="p-6 pt-4 flex flex-col flex-1 relative z-10">
         <div className="mb-3">
-          <p className="text-[10px] font-bold uppercase tracking-tighter mb-1 opacity-50 dark:text-white" style={{ color: product.accentColor }}>{product.tagline}</p>
-          <h3 className="text-lg font-bold dark:text-white leading-tight min-h-[56px] line-clamp-2">{product.name}</h3>
+          <p 
+            className={`text-[10px] font-bold uppercase tracking-wider mb-1.5 transition-all duration-500 ${isHovered ? 'opacity-100' : 'opacity-60'}`} 
+            style={{ color: product.accentColor }}
+          >
+            {product.tagline}
+          </p>
+          <h3 className={`text-lg font-bold dark:text-white leading-tight min-h-[56px] line-clamp-2 transition-all duration-500 ${isHovered ? 'text-gray-900 dark:text-white' : 'text-gray-800 dark:text-gray-100'}`}>
+            {product.name}
+          </h3>
         </div>
 
-        <div className="flex flex-wrap gap-1.5 mb-6">
-          {product.features.map((f: string) => (
-            <span key={f} className="text-[9px] font-bold px-2.5 py-1 rounded-lg bg-gray-100/50 dark:bg-white/5 dark:text-gray-400 border dark:border-white/5 transition-colors group-hover:border-white/20">
+        {/* Features with staggered animation */}
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {product.features.map((f: string, i: number) => (
+            <span 
+              key={f} 
+              className={`text-[9px] font-bold px-2.5 py-1 rounded-lg bg-gray-100/60 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200/50 dark:border-white/5 transition-all duration-500 ${isHovered ? 'border-opacity-100 bg-gray-100 dark:bg-white/10 transform -translate-y-0.5' : ''}`}
+              style={{ 
+                transitionDelay: isHovered ? `${i * 50}ms` : '0ms',
+                borderColor: isHovered ? `${product.accentColor}40` : undefined
+              }}
+            >
               {f}
             </span>
           ))}
         </div>
 
-        <div className="mt-auto flex items-center justify-between border-t dark:border-white/5 pt-5">
+        {/* Price section with animation */}
+        <div className={`mt-auto flex items-center justify-between border-t border-gray-100 dark:border-white/5 pt-5 transition-all duration-500 ${isHovered ? 'border-opacity-50' : ''}`}>
           <div className="flex flex-col">
-            <span className="text-xs text-gray-400 line-through font-medium">₺{product.originalPrice.toLocaleString('tr-TR')}</span>
-            <span className="text-xl font-black dark:text-white tracking-tighter">₺{product.price.toLocaleString('tr-TR')}</span>
+            <span className={`text-xs line-through font-medium transition-all duration-500 ${isHovered ? 'text-red-400' : 'text-gray-400'}`}>
+              {'\u20BA'}{product.originalPrice.toLocaleString('tr-TR')}
+            </span>
+            <span className={`text-xl font-black tracking-tighter transition-all duration-500 ${isHovered ? 'scale-105 origin-left' : ''}`} style={{ color: isHovered ? product.accentColor : undefined }}>
+              <span className="dark:text-white">{'\u20BA'}{product.price.toLocaleString('tr-TR')}</span>
+            </span>
           </div>
           
           <button 
             onClick={handleAdd} 
             className={`relative overflow-hidden w-12 h-12 rounded-2xl transition-all duration-300 flex items-center justify-center shadow-lg active:scale-90 ${
-              added ? 'bg-green-500 text-white' : 'bg-[#1a1a2e] dark:bg-white text-white dark:text-black hover:shadow-white/10'
+              added 
+                ? 'bg-green-500 text-white scale-110' 
+                : isHovered 
+                  ? 'scale-110 shadow-xl' 
+                  : ''
             }`}
+            style={{ 
+              background: added ? undefined : isHovered ? product.accentColor : undefined,
+              color: added ? undefined : isHovered ? 'white' : undefined
+            }}
           >
-            <Icon name={added ? "CheckIcon" : "PlusIcon"} size={20} />
-            {added && <span className="absolute inset-0 bg-white/20 animate-ping"></span>}
+            <div className={`absolute inset-0 rounded-2xl transition-colors duration-300 ${!added && !isHovered ? 'bg-[#1a1a2e] dark:bg-white' : ''}`} />
+            <Icon name={added ? "CheckIcon" : "PlusIcon"} size={20} className={`relative z-10 ${!added && !isHovered ? 'text-white dark:text-black' : 'text-white'}`} />
+            {added && <span className="absolute inset-0 bg-white/20 animate-ping rounded-2xl"></span>}
           </button>
         </div>
       </div>
@@ -460,7 +560,8 @@ export default function ProductShowcase() {
   const [activeCategory, setActiveCategory] = useState("all");
   const filteredProducts = activeCategory === "all" ? products : products.filter(p => p.category === activeCategory);
   const [visibleCount, setVisibleCount] = useState(4);
-    const displayProducts = filteredProducts.slice(0, visibleCount);
+  const displayProducts = filteredProducts.slice(0, visibleCount);
+  const [hoveredProductId, setHoveredProductId] = useState<string | null>(null);
   return (
     <section id="products" className="py-24 bg-[#fdfcfb] dark:bg-[#0a0f1c] transition-colors duration-700">
       <div className="max-w-[1200px] mx-auto px-6">
@@ -495,9 +596,15 @@ export default function ProductShowcase() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 perspective-1000">
           {displayProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard 
+              key={product.id} 
+              product={product} 
+              isAnyHovered={hoveredProductId !== null && hoveredProductId !== product.id}
+              onHover={() => setHoveredProductId(product.id)}
+              onLeave={() => setHoveredProductId(null)}
+            />
           ))}
         </div>
 

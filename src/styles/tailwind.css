@@ -315,3 +315,97 @@
 .delay-400 { animation-delay: 400ms; }
 .delay-500 { animation-delay: 500ms; }
 .delay-700 { animation-delay: 700ms; }
+
+/* Product Card Hover Effects */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.product-card {
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+}
+
+.product-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 32px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.product-card:hover::before {
+  opacity: 1;
+}
+
+/* Shimmer effect on hover */
+.product-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    transparent, 
+    rgba(255,255,255,0.15), 
+    transparent
+  );
+  transform: skewX(-15deg);
+  transition: left 0.7s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.product-card:hover::after {
+  left: 150%;
+}
+
+/* Dark mode adjustments */
+.dark .product-card::after {
+  background: linear-gradient(
+    90deg, 
+    transparent, 
+    rgba(255,255,255,0.08), 
+    transparent
+  );
+}
+
+/* Smooth blur transition for non-hovered cards */
+@keyframes blurIn {
+  from { filter: blur(0); }
+  to { filter: blur(2px); }
+}
+
+@keyframes scaleDown {
+  from { transform: scale(1); }
+  to { transform: scale(0.97); }
+}
+
+/* Float animation for particles */
+@keyframes floatParticle {
+  0%, 100% { 
+    transform: translateY(0) translateX(0) scale(1); 
+    opacity: 0.6;
+  }
+  50% { 
+    transform: translateY(-15px) translateX(5px) scale(1.2); 
+    opacity: 1;
+  }
+}
+
+.animate-float {
+  animation: floatParticle 3s ease-in-out infinite;
+}
+
+/* Enhanced focus states for accessibility */
+.product-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
